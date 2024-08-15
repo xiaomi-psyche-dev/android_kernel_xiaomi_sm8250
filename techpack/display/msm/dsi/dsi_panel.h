@@ -245,6 +245,7 @@ struct dsi_panel {
 	u32 fod_dim_lut_count;
 	int hbm_mode;
 	int dc_dimming_mode;
+	bool doze_status;
 };
 
 static inline bool dsi_panel_ulps_feature_enabled(struct dsi_panel *panel)
@@ -385,6 +386,6 @@ int dsi_panel_set_fod_hbm(struct dsi_panel *panel, bool status);
 
 u32 dsi_panel_get_fod_dim_alpha(struct dsi_panel *panel);
 
-int dsi_panel_apply_hbm_mode(struct dsi_panel *panel);
+int dsi_panel_apply_hbm_mode(struct dsi_panel *panel, int mode);
 
 #endif /* _DSI_PANEL_H_ */
