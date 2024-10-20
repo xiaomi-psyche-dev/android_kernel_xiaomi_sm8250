@@ -936,9 +936,12 @@ int dsi_panel_set_backlight(struct dsi_panel *panel, u32 bl_lvl)
 	if (panel->host_config.ext_bridge_mode)
 		return 0;
 
+<<<<<<< HEAD
 	if (panel->hbm_mode && !panel->mi_cfg.in_aod)
 		goto skip_bl_adj;
 
+=======
+>>>>>>> 9fc539da5dff (Seperate display driver for MIUI and AOSP builds.)
 	DSI_DEBUG("backlight type:%d lvl:%d\n", bl->type, bl_lvl);
 
 	/* lmi panel must restore to last_bl_level to avoid flash high
@@ -4801,12 +4804,15 @@ exit_skip:
 	mi_cfg->fod_to_nolp = false;
 exit:
 	mutex_unlock(&panel->panel_lock);
+<<<<<<< HEAD
 
 	if (panel->hbm_mode)
 		dsi_panel_apply_hbm_mode(panel, true);
 	else if (panel->dc_dimming_mode)
 		dsi_panel_apply_dc_dimming_mode(panel, true);
 
+=======
+>>>>>>> 9fc539da5dff (Seperate display driver for MIUI and AOSP builds.)
 	return rc;
 }
 
@@ -5227,12 +5233,15 @@ int dsi_panel_enable(struct dsi_panel *panel)
 	mi_cfg->cabc_current_status = 0;
 
 	mutex_unlock(&panel->panel_lock);
+<<<<<<< HEAD
 
 	if (panel->hbm_mode)
 		dsi_panel_apply_hbm_mode(panel, true);
 	else if (panel->dc_dimming_mode)
 		dsi_panel_apply_dc_dimming_mode(panel, true);
 
+=======
+>>>>>>> 9fc539da5dff (Seperate display driver for MIUI and AOSP builds.)
 	return rc;
 }
 
