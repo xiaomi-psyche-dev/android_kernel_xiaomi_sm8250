@@ -219,4 +219,11 @@ void sde_cp_crtc_enable(struct drm_crtc *crtc);
  * @crtc:  Pointer to drm_crtc.
  */
 void sde_cp_crtc_disable(struct drm_crtc *crtc);
+
+/**
+ * sde_cp_crtc_exposure_pcc_check(): Check and enforce pcc for the
+ *                                   exposure_adjustment driver.
+ * @crtc:  Pointer to drm_crtc.
+ */
+void sde_cp_crtc_exposure_pcc_check(struct drm_crtc *crtc);
 #endif /*_SDE_COLOR_PROCESSING_H */

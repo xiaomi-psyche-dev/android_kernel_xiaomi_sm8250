@@ -4563,6 +4563,13 @@ static void sde_crtc_fod_atomic_check(struct sde_crtc_state *cstate,
 			pstates[plane_idx].stage++;
 }
 
+static int sde_crtc_exposure_atomic_check(struct drm_crtc *crtc)
+{
+	sde_cp_crtc_exposure_pcc_check(crtc);
+
+	return 0;
+}
+
 static int _sde_crtc_check_secure_conn(struct drm_crtc *crtc,
 		struct drm_crtc_state *state, uint32_t fb_sec)
 {
@@ -4907,6 +4914,8 @@ static int _sde_crtc_atomic_check_pstates(struct drm_crtc *crtc,
 		return rc;
 
 	sde_crtc_fod_atomic_check(cstate, pstates, cnt);
+
+	sde_crtc_exposure_atomic_check(crtc);
 
 	/* assign mixer stages based on sorted zpos property */
 	rc = _sde_crtc_check_zpos(state, sde_crtc, pstates, cstate, mode, cnt);

@@ -17,7 +17,7 @@
 #include "sde_ad4.h"
 #include "sde_hw_interrupts.h"
 #include "sde_core_irq.h"
-#include "dsi_panel.h"
+#include "dsi_display.h"
 #include "sde_hw_color_proc_common_v4.h"
 #include "sde_connector.h"
 
@@ -4142,4 +4142,23 @@ void sde_cp_crtc_disable(struct drm_crtc *drm_crtc)
 			CRTC_PROP_DSPP_INFO);
 	mutex_unlock(&crtc->crtc_cp_lock);
 	vfree(info);
+}
+
+void sde_cp_crtc_exposure_pcc_check(struct drm_crtc *crtc)
+{
+	struct dsi_display *dsi_display = get_main_display();
+	struct dsi_panel *panel = dsi_display->panel;
+	struct sde_cp_node *prop_node = NULL;
+	struct sde_crtc *sde_crtc = to_sde_crtc(crtc);
+
+	if (panel->dc_dimming_mode && (pcc_info.pcc_val != panel->last_dc_dimming_ea_id)) {
+		list_for_each_entry(prop_node, &sde_crtc->feature_list, feature_list) {
+			if (pcc_info.pcc_property.base.id == prop_node->property_id) {
+				break;
+			}
+		}
+		pcc_info.pcc_val = panel->last_dc_dimming_ea_id;
+		sde_cp_enable_crtc_property(crtc, &pcc_info.pcc_property,
+							  prop_node, panel->last_dc_dimming_ea_id);
+	}
 }

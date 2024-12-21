@@ -248,6 +248,8 @@ struct dsi_panel {
 	int dc_dimming_mode;
 	bool doze_status;
 
+	int last_dc_dimming_ea_id;
+
 	struct delayed_work enable_dc_dimming_delayed_work;
 };
 

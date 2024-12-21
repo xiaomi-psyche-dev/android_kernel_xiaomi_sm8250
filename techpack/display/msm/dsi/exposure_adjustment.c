@@ -82,11 +82,13 @@ static int ea_panel_send_pcc(u32 bl_lvl)
 		return -EINVAL;
 	}
 	pr_debug("DSPP Blob ID %d has length %zu\n",
-			prop->base.id, blob->length);
+			prop->base.id, blob->length);\
 
 	rc = sde_cp_crtc_set_property(crtc, prop, blob->base.id);
 	if (rc) {
 		pr_err("DSPP: Cannot set PCC: %d.\n", rc);
+	} else {
+		display->panel->last_dc_dimming_ea_id = blob->base.id;
 	}
 
 	return rc;
