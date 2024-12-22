@@ -5099,6 +5099,11 @@ static ssize_t sysfs_dc_dimming_write(struct device *dev,
 	if (!display->panel->hbm_mode)
 		ea_panel_mode_ctrl(display->panel, dc_dimming_mode != 0);
 
+	if (!dc_dimming_mode) {
+		display->panel->dc_dimming_pcc_property_unmatch = false;
+		display->panel->dc_dimming_pcc_property_pre_match_to_unmatch = true;
+	}
+
 	return count;
 }
 

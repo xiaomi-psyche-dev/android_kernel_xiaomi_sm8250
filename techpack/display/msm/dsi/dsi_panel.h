@@ -249,6 +249,9 @@ struct dsi_panel {
 	bool doze_status;
 
 	int last_dc_dimming_ea_id;
+	bool dc_dimming_pcc_property_unmatch;
+	bool dc_dimming_pcc_property_pre_match_to_unmatch;
+	bool dc_dimming_pcc_property_pre_unmatch_to_match;
 
 	struct delayed_work enable_dc_dimming_delayed_work;
 };

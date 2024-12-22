@@ -20,6 +20,7 @@
 #include "dsi_display.h"
 #include "sde_hw_color_proc_common_v4.h"
 #include "sde_connector.h"
+#include "exposure_adjustment.h"
 
 struct sde_cp_node {
 	u32 property_id;
@@ -4150,6 +4151,8 @@ void sde_cp_crtc_exposure_pcc_check(struct drm_crtc *crtc)
 	struct dsi_panel *panel = dsi_display->panel;
 	struct sde_cp_node *prop_node = NULL;
 	struct sde_crtc *sde_crtc = to_sde_crtc(crtc);
+	struct drm_property_blob *blob = NULL;
+	struct drm_msm_pcc *pcc_cfg = NULL;
 
 	if (panel->dc_dimming_mode && (pcc_info.pcc_val != panel->last_dc_dimming_ea_id)) {
 		list_for_each_entry(prop_node, &sde_crtc->feature_list, feature_list) {
@@ -4157,8 +4160,30 @@ void sde_cp_crtc_exposure_pcc_check(struct drm_crtc *crtc)
 				break;
 			}
 		}
-		pcc_info.pcc_val = panel->last_dc_dimming_ea_id;
-		sde_cp_enable_crtc_property(crtc, &pcc_info.pcc_property,
-							  prop_node, panel->last_dc_dimming_ea_id);
+		blob = prop_node->blob_ptr;
+		pcc_cfg = blob->data;
+
+		if ((pcc_cfg->r.r == EXPOSURE_ADJUSTMENT_MAX) &&
+		    (pcc_cfg->g.g == EXPOSURE_ADJUSTMENT_MAX) &&
+		    (pcc_cfg->b.b == EXPOSURE_ADJUSTMENT_MAX)) {
+			pcc_info.pcc_val = panel->last_dc_dimming_ea_id;
+			sde_cp_enable_crtc_property(crtc, &pcc_info.pcc_property,
+								  prop_node, panel->last_dc_dimming_ea_id);
+			if (panel->dc_dimming_pcc_property_pre_unmatch_to_match) {
+				panel->dc_dimming_pcc_property_unmatch = false;
+				panel->dc_dimming_pcc_property_pre_match_to_unmatch = true;
+				dsi_panel_set_backlight(panel, panel->bl_config.real_bl_level);
+				printk("[Rocky7842] Match state changed, update hw bl");
+				panel->dc_dimming_pcc_property_pre_unmatch_to_match = false;
+			}
+		} else {
+			if (panel->dc_dimming_pcc_property_pre_match_to_unmatch) {
+				panel->dc_dimming_pcc_property_unmatch = true;
+				panel->dc_dimming_pcc_property_pre_unmatch_to_match = true;
+				dsi_panel_set_backlight(panel, panel->bl_config.real_bl_level);
+				printk("[Rocky7842] Match state changed, update hw bl");
+				panel->dc_dimming_pcc_property_pre_match_to_unmatch = false;
+			}
+		}
 	}
 }

@@ -89,6 +89,8 @@ static int ea_panel_send_pcc(u32 bl_lvl)
 		pr_err("DSPP: Cannot set PCC: %d.\n", rc);
 	} else {
 		display->panel->last_dc_dimming_ea_id = blob->base.id;
+		display->panel->dc_dimming_pcc_property_unmatch = false;
+		display->panel->dc_dimming_pcc_property_pre_match_to_unmatch = true;
 	}
 
 	return rc;
@@ -96,6 +98,9 @@ static int ea_panel_send_pcc(u32 bl_lvl)
 
 void ea_panel_mode_ctrl(struct dsi_panel *panel, bool enable)
 {
+	if (panel->dc_dimming_pcc_property_unmatch)
+		return;
+
 	if (pcc_backlight_enable != enable && (!panel->doze_status || !enable)) {
 		pcc_backlight_enable = enable;
 		pcc_backlight_add_delay = true;
