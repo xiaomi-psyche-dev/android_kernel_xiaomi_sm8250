@@ -5078,6 +5078,11 @@ static ssize_t sysfs_dc_dimming_read(struct device *dev,
 {
 	struct dsi_display *display = dev_get_drvdata(dev);
 
+	if (!display) {
+		pr_err("Invalid display\n");
+		return -EINVAL;
+	}
+
 	return scnprintf(buf, PAGE_SIZE, "%d\n", display->panel->dc_dimming_mode ? 1 : 0);
 }
 
@@ -5085,17 +5090,22 @@ static ssize_t sysfs_dc_dimming_write(struct device *dev,
 	    struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct dsi_display *display = dev_get_drvdata(dev);
-	u32 dc_dimming_mode;
+	bool dc_dimming_mode;
+	int rc;
 
-	if (!display->panel)
-		return 0;
+	if (!display) {
+		pr_err("Invalid display\n");
+		return -EINVAL;
+	}
 
-	if (sscanf(buf, "%d", &dc_dimming_mode) != 1) {
-		DSI_ERR("sccanf buf error!\n");
-		return count;
+	rc = kstrtobool(buf, &dc_dimming_mode);
+	if (rc) {
+		pr_err("Failed to parse value, rc=%d\n", rc);
+		return rc;
 	}
 
 	display->panel->dc_dimming_mode = dc_dimming_mode;
+
 	if (!display->panel->hbm_mode)
 		ea_panel_mode_ctrl(display->panel, dc_dimming_mode != 0);
 
@@ -5115,8 +5125,11 @@ static ssize_t sysfs_hbm_read(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	struct dsi_display *display = dev_get_drvdata(dev);
-	if (!display->panel)
-		return 0;
+
+	if (!display) {
+		pr_err("Invalid display\n");
+		return -EINVAL;
+	}
 
 	return scnprintf(buf, PAGE_SIZE, "%d\n", display->panel->hbm_mode);
 }
@@ -5125,45 +5138,28 @@ static ssize_t sysfs_hbm_write(struct device *dev,
 	    struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct dsi_display *display = dev_get_drvdata(dev);
-	int ret, hbm_mode;
+	bool hbm_mode;
+	int rc;
 
-	if (!display->panel)
+	if (!display) {
+		pr_err("Invalid display\n");
 		return -EINVAL;
-
-	ret = kstrtoint(buf, 10, &hbm_mode);
-	if (ret) {
-		pr_err("kstrtoint failed. ret=%d\n", ret);
-		return ret;
 	}
 
-	mutex_lock(&display->display_lock);
+	rc = kstrtobool(buf, &hbm_mode);
+	if (rc) {
+		pr_err("Failed to parse value, rc=%d\n", rc);
+		return rc;
+	}
 
 	display->panel->hbm_mode = hbm_mode;
-	if (!dsi_panel_initialized(display->panel))
-		goto error;
 
-	ret = dsi_display_clk_ctrl(display->dsi_clk_handle,
-			DSI_CORE_CLK, DSI_CLK_ON);
-	if (ret) {
-		pr_err("[%s] failed to enable DSI core clocks, rc=%d\n",
-		       display->name, ret);
-		goto error;
-	}
+	rc = dsi_panel_apply_hbm_mode(display->panel, hbm_mode);
+	if (rc)
+		pr_err("Failed to %s HBM mode, rc=%d\n",
+		       hbm_mode ? "enable" : "disable", rc);
 
-	ret = dsi_panel_apply_hbm_mode(display->panel, display->panel->hbm_mode);
-	if (ret)
-		pr_err("unable to set hbm mode\n");
-
-	ret = dsi_display_clk_ctrl(display->dsi_clk_handle,
-			DSI_CORE_CLK, DSI_CLK_OFF);
-	if (ret) {
-		pr_err("[%s] failed to disable DSI core clocks, rc=%d\n",
-		       display->name, ret);
-		goto error;
-	}
-error:
-	mutex_unlock(&display->display_lock);
-	return ret == 0 ? count : ret;
+	return !rc ? count : rc;
 }
 
 static DEVICE_ATTR(hbm, 0644,
