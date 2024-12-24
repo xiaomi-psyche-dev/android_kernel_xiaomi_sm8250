@@ -115,9 +115,11 @@ void ea_panel_mode_ctrl(struct dsi_panel *panel, bool enable)
 	}
 }
 
-u32 ea_panel_calc_backlight(u32 bl_lvl)
+u32 ea_panel_calc_backlight(struct dsi_panel *panel, u32 bl_lvl)
 {
 	if (pcc_backlight_enable && bl_lvl != 0 && bl_lvl < ELVSS_OFF_THRESHOLD) {
+		if (panel->dc_dimming_above_thres)
+			panel->dc_dimming_above_thres = false;
 		if (ea_panel_send_pcc(bl_lvl))
 			pr_err("ERROR: Failed to send PCC\n");
 		if (pcc_backlight_add_delay) {
@@ -126,6 +128,10 @@ u32 ea_panel_calc_backlight(u32 bl_lvl)
 		}
 		return ELVSS_OFF_THRESHOLD;
 	} else {
+		if (!panel->dc_dimming_above_thres) {
+			ea_panel_send_pcc(ELVSS_OFF_THRESHOLD);
+			panel->dc_dimming_above_thres = true;
+		}
 		return bl_lvl;
 	}
 }

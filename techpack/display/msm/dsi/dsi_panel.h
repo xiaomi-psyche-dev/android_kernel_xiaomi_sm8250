@@ -252,6 +252,7 @@ struct dsi_panel {
 	bool dc_dimming_pcc_property_unmatch;
 	bool dc_dimming_pcc_property_pre_match_to_unmatch;
 	bool dc_dimming_pcc_property_pre_unmatch_to_match;
+	bool dc_dimming_above_thres;
 
 	struct delayed_work enable_dc_dimming_delayed_work;
 };
