@@ -38,7 +38,7 @@ ifeq ($(strip $(CONFIG_KSU)),m)
 $(error CONFIG_KSU_MANUAL_HOOK cannot be enabled when compiling KernelSU as LKM!)
 endif
 else
-ccflags-y += -DKSU_HOOK_WITH_KPROBES
+#ccflags-y += -DKSU_HOOK_WITH_KPROBES
 endif
 endif
 
