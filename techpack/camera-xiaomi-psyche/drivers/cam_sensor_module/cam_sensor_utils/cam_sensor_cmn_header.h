@@ -160,7 +160,8 @@ enum cam_sensor_packet_opcodes {
 enum cam_actuator_packet_opcodes {
 	CAM_ACTUATOR_PACKET_OPCODE_INIT,
 	CAM_ACTUATOR_PACKET_AUTO_MOVE_LENS,
-	CAM_ACTUATOR_PACKET_MANUAL_MOVE_LENS
+	CAM_ACTUATOR_PACKET_MANUAL_MOVE_LENS,
+	CAM_ACTUATOR_PACKET_OPCODE_READ
 };
 
 enum cam_eeprom_packet_opcodes {
@@ -171,7 +172,9 @@ enum cam_eeprom_packet_opcodes {
 enum cam_ois_packet_opcodes {
 	CAM_OIS_PACKET_OPCODE_INIT,
 	CAM_OIS_PACKET_OPCODE_OIS_CONTROL,
-	CAM_OIS_PACKET_OPCODE_OIS_GETDATA
+	CAM_OIS_PACKET_OPCODE_READ,
+	CAM_OIS_PACKET_OPCODE_OIS_GETDATA,
+	CAM_OIS_PACKET_OPCODE_WRITE_TIME
 };
 
 enum msm_bus_perf_setting {
