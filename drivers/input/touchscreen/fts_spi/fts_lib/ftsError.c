@@ -41,6 +41,7 @@ static ErrorList errors;
 */
 void logError(int force, const char *msg, ...)
 {
+#ifdef CONFIG_FTS_DEBUG
 	if (force == 1
 #ifdef DEBUG
 	    || 1
@@ -51,6 +52,9 @@ void logError(int force, const char *msg, ...)
 		vprintk(msg, args);
 		va_end(args);
 	}
+#else
+	//Do Nothing
+#endif
 }
 
 /**

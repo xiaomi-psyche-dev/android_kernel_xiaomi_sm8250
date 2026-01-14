@@ -23,3 +23,8 @@ config TOUCHSCREEN_ST_DEBUG_FS
           Say Y here to enable  touch debugfs functionality.
 
           If unsure, say N.
+
+config FTS_DEBUG
+	bool "Enable debug"
+	help 
+		 Say Y if you want to enable debugging
