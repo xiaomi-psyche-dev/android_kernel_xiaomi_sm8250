@@ -24,3 +24,7 @@ config TOUCHSCREEN_ST_I2C
 
 #endif
 
+config FTS_DEBUG
+	bool "Enable debug"
+	help 
+		 Say Y if you want to enable debugging

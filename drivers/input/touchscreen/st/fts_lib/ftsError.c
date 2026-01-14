@@ -67,18 +67,20 @@ static char tag[8] = "[ FTS ]\0";
 
 void logError(int force, const char *msg, ...)
 {
-
+#ifdef CONFIG_FTS_DEBUG
 	if (force == 1
 #ifdef DEBUG
-		|| 1
+	    || 1
 #endif
-	) {
+	    ) {
 		va_list args;
-
 		va_start(args, msg);
 		vprintk(msg, args);
 		va_end(args);
 	}
+#else
+	//Do Nothing
+#endif
 }
 
 int isI2cError(int error)
