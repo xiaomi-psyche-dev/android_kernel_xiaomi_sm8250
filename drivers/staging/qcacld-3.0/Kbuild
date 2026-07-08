@@ -2050,7 +2050,7 @@ endif
 
 LINUX_INC :=	-I $(srctree)/include
 
-INCS := -I$(WLAN_ROOT)/inc \
+INCS := -I $(srctree)/$(WLAN_ROOT)/inc \
 		$(EPPING_INC) \
 		$(QAL_INC) \
 		$(QDF_INC) \
@@ -2087,19 +2087,49 @@ INCS +=		$(CP_STATS_OS_IF_INC)
 INCS +=		$(CP_STATS_TGT_INC)
 INCS +=		$(CP_STATS_DISPATCHER_INC)
 INCS += 	$(COMP_CP_STATS_DISPATCHER_INC)
+################ INTEROP ISSUES AP ################
+INCS +=		$(INTEROP_ISSUES_AP_OS_IF_INC)
+INCS +=		$(INTEROP_ISSUES_AP_TGT_INC)
+INCS +=		$(INTEROP_ISSUES_AP_DISPATCHER_INC)
+INCS +=		$(INTEROP_ISSUES_AP_CORE_INC)
+################ NAN POS ################
+INCS +=		$(NAN_CORE_INC)
+INCS +=		$(NAN_UCFG_INC)
+INCS +=		$(NAN_TGT_INC)
+INCS +=		$(NAN_OS_IF_INC)
 ##########################################
 INCS +=		$(UMAC_OBJMGR_INC)
 INCS +=		$(UMAC_MGMT_TXRX_INC)
+INCS +=		$(PMO_INC)
+INCS +=		$(P2P_INC)
+INCS +=		$(POLICY_MGR_INC)
 INCS +=		$(TARGET_INC)
+INCS +=		$(TDLS_INC)
 INCS +=		$(UMAC_SER_INC)
 INCS +=		$(NLINK_INC) \
 		$(PTT_INC) \
 		$(WLAN_LOGGING_INC)
 
+INCS +=		$(PLD_INC)
+INCS +=		$(OCB_INC)
+
+INCS +=		$(IPA_INC)
 INCS +=		$(UMAC_SM_INC)
 INCS +=		$(UMAC_MLME_INC)
+INCS +=		$(MLME_INC)
+INCS +=		$(FWOL_INC)
+INCS +=		$(BLM_INC)
+
+ifeq ($(CONFIG_REMOVE_PKT_LOG), n)
+INCS +=		$(PKTLOG_INC)
+endif
 
 INCS +=		$(HOST_DIAG_LOG_INC)
+
+INCS +=		$(DISA_INC)
+INCS +=		$(ACTION_OUI_INC)
+INCS +=		$(PKT_CAPTURE_INC)
+INCS +=		$(FTM_TIME_SYNC_INC)
 
 INCS +=		$(UMAC_DISP_INC)
 INCS +=		$(UMAC_SCAN_INC)
